@@ -1,5 +1,6 @@
 import textwrap
-from core.models import Homograph, Feedback, FeedbackWithoutHomograph
+from feedback.models import Feedback, FeedbackWithoutHomograph
+from core.models import Homograph
 from django.core.management.base import BaseCommand
 import pymorphy2
 from telegram.ext import CommandHandler, ConversationHandler, Filters, MessageHandler, Updater
