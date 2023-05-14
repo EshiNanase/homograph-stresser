@@ -1,20 +1,9 @@
-import textwrap
-
 from django.core.management.base import BaseCommand
 from string import punctuation
 from core.models import Homograph
 import pymorphy2
 
 morph = pymorphy2.MorphAnalyzer(lang='ru')
-
-
-def start(update, context):
-    text = textwrap.dedent(
-        """
-        Здравствуйте, я бот для снятия омографии.
-        Просто отправьте мне какой-нибудь текст, 
-        """
-    )
 
 
 def rip_punctuation(sentence):
@@ -33,7 +22,12 @@ def find_homograph(text_initial):
     homographs_found = []
     for word in sentence:
 
-        word = morph.parse(word)[0].normal_form.lower()
+        word_parsed = morph.parse(word)[0]
+
+        if word_parsed.tag.POS == 'PREP':
+            continue
+
+        word = word_parsed.normal_form.lower()
         text_normalized.append(word)
         homograph = homographs.filter(homograph=word)
 
@@ -60,7 +54,7 @@ def count_probability(sentence_normalized, homograph):
     for word in sentence_normalized:
         for main_quasi in main_quasis:
             if word in main_quasi.quasi_synonyms:
-                probability[main_quasi.stress] += 1
+                probability[main_quasi.stress] += main_quasi.quasi_synonyms[word]
     return probability, homograph
 
 

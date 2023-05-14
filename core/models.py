@@ -33,11 +33,10 @@ class QuasiSynonym(models.Model):
         verbose_name='На какой слог ударение (с нуля)'
     )
     synonyms = models.JSONField(
-        default=list,
         verbose_name='Наиболее близкие по значению к семантич. классу'
     )
     quasi_synonyms = models.JSONField(
-        default=list,
+        default=dict,
         blank=True,
         null=True,
         verbose_name='Квазисинонимы'
@@ -54,27 +53,30 @@ class QuasiSynonym(models.Model):
 @receiver(post_save, sender=QuasiSynonym)
 def create_quasi_synonyms(sender, instance, created, **kwargs):
 
-    if created:
-        model = KeyedVectors.load_word2vec_format(settings.MODEL_PATH, binary=True)
-        morph = pymorphy2.MorphAnalyzer(lang='ru')
+    try:
+        if created:
+            model = KeyedVectors.load_word2vec_format(settings.MODEL_PATH, binary=True)
+            morph = pymorphy2.MorphAnalyzer(lang='ru')
 
-        if len(instance.synonyms) == 3:
-            quantity = 100
-        elif len(instance.synonyms) == 2:
-            quantity = 150
-        else:
-            quantity = 300
+            if len(instance.synonyms) == 3:
+                quantity = 100
+            elif len(instance.synonyms) == 2:
+                quantity = 150
+            else:
+                quantity = 300
 
-        for synonym in instance.synonyms:
-            tag = morph.parse(synonym)[0].tag.POS
+            for synonym in instance.synonyms:
+                tag = morph.parse(synonym)[0].tag.POS
 
-            if tag == 'ADJF':
-                tag = tag.replace('F', '')
-            elif tag == 'INFN':
-                tag = tag.replace('INFN', 'VERB')
+                if tag == 'ADJF':
+                    tag = tag.replace('F', '')
+                elif tag == 'INFN':
+                    tag = tag.replace('INFN', 'VERB')
 
-            quasi_synonyms = model.most_similar(positive=synonym + '_' + tag, topn=quantity)
-            for quasi_synonym in quasi_synonyms:
-                quasi_synonym = morph.parse(quasi_synonym[0].split('_')[0])[0].normal_form.lower()
-                instance.quasi_synonyms.append(quasi_synonym)
-            instance.save()
+                quasi_synonyms = model.most_similar(positive=synonym + '_' + tag, topn=quantity)
+                for quasi_synonym, vector in quasi_synonyms:
+                    quasi_synonym = morph.parse(quasi_synonym.split('_')[0])[0].normal_form.lower()
+                    instance.quasi_synonyms[quasi_synonym] = vector
+                instance.save()
+    except KeyError:
+        instance.delete()
