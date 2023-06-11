@@ -131,10 +131,11 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MODEL_PATH = env.str('MODEL_PATH', None)
-
 TELEGRAM_TOKEN = env.str('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = env.str('TELEGRAM_CHAT_ID')
+
+MODEL_FOLDER = env.str('MODEL_FOLDER')
+MODEL_NAME = env.str('MODEL_NAME')
 
 
 # JUPYTER

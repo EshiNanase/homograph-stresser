@@ -4,6 +4,8 @@ from django.dispatch import receiver
 from gensim.models import KeyedVectors
 from django.conf import settings
 import pymorphy2
+import os
+from django.conf import settings
 
 
 class Homograph(models.Model):
@@ -56,9 +58,11 @@ class QuasiSynonym(models.Model):
 @receiver(post_save, sender=QuasiSynonym)
 def create_quasi_synonyms(sender, instance, created, **kwargs):
 
+    model_path = os.path.join(settings.MODEL_FOLDER, settings.MODEL_NAME)
+
     try:
         if created:
-            model = KeyedVectors.load_word2vec_format(settings.MODEL_PATH, binary=True)
+            model = KeyedVectors.load_word2vec_format(model_path, binary=True)
             morph = pymorphy2.MorphAnalyzer(lang='ru')
 
             if 3 >= len(instance.synonyms) >= 5:
