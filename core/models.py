@@ -31,7 +31,7 @@ class QuasiSynonym(models.Model):
         related_name='quasis',
         verbose_name='Омограф'
     )
-    initial_weight = models.PositiveSmallIntegerField(
+    initial_weight = models.FloatField(
         verbose_name='Изначальный вес'
     )
     stress = models.PositiveSmallIntegerField(
@@ -73,6 +73,7 @@ def create_quasi_synonyms(sender, instance, created, **kwargs):
                 quantity = 500
 
             for synonym in instance.synonyms:
+                print(synonym)
                 tag = morph.parse(synonym)[0].tag.POS
 
                 if tag == 'ADJF':

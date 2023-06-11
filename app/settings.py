@@ -139,9 +139,16 @@ MODEL_NAME = env.str('MODEL_NAME')
 
 
 # JUPYTER
+try:
+    import jupyterlab
+    notebook_default_url = '/lab'  # Using JupyterLab
+except ImportError:
+    notebook_default_url = '/tree'  # Using Jupyter
+
 NOTEBOOK_ARGUMENTS = [
     '--ip', '0.0.0.0',
-    '--allow-root',
-    '--no-browser',
+    '--port', '8888',
+    '--notebook-dir', 'notebooks',
+    '--NotebookApp.default_url', notebook_default_url,
 ]
 IPYTHON_KERNEL_DISPLAY_NAME = 'Django Kernel'

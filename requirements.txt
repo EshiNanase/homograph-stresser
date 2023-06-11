@@ -7,3 +7,4 @@ django_extensions==3.2.3
 notebook==6.5.4
 ipython==8.14.0
 jupyter==1.0.0
+jupyterlab==4.0.2
