@@ -85,7 +85,7 @@ def handle_accuracy(update, context):
             text=context.user_data['text'],
             text_normalized=context.user_data['text_normalized'],
             homograph_stressed=context.user_data['homograph_stressed'],
-            probability=context.user_data['probability'],
+            probability=context.user_data['weights'],
             correct=False,
             where_stress_should_be=where_stress_should_be
         )
