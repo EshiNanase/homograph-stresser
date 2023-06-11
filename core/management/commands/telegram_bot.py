@@ -9,7 +9,7 @@ import logging
 from django.conf import settings
 from enum import Enum, auto, unique
 from logger import ChatbotLogsHandler
-from .stress_homograph import find_homograph, count_probability, make_stress
+from .stress_homograph import find_homograph, count_weights, make_stress
 
 morph = pymorphy2.MorphAnalyzer(lang='ru')
 logger = logging.getLogger(__file__)
@@ -61,7 +61,7 @@ def handle_accuracy(update, context):
             text=context.user_data['text'],
             text_normalized=context.user_data['text_normalized'],
             homograph_stressed=context.user_data['homograph_stressed'],
-            probability=context.user_data['probability']
+            probability=context.user_data['weights']
         )
 
         message = 'Спасибо, фидбек отправлен! Отправляйте следующий текст!'
@@ -103,14 +103,14 @@ def handle_sent_text(update, context):
 
     if homograph:
 
-        probability, homograph = count_probability(text_normalized, homograph)
-        homograph_stressed = make_stress(string=homograph.homograph, n=max(probability, key=probability.get))
+        weights, homograph = count_weights(text_normalized, homograph)
+        homograph_stressed = make_stress(string=homograph.homograph, n=max(weights, key=weights.get))
 
         context.user_data['homograph'] = homograph
         context.user_data['text'] = text_initial
         context.user_data['text_normalized'] = text_normalized
         context.user_data['homograph_stressed'] = homograph_stressed
-        context.user_data['probability'] = probability
+        context.user_data['weights'] = weights
 
         message = textwrap.dedent(
             f"""
