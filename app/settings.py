@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'core',
     'feedback'
 ]
@@ -134,3 +135,11 @@ MODEL_PATH = env.str('MODEL_PATH', None)
 
 TELEGRAM_TOKEN = env.str('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = env.str('TELEGRAM_CHAT_ID')
+
+
+# JUPYTER
+NOTEBOOK_ARGUMENTS = [
+    '--ip', '0.0.0.0',
+    '--port', '8888',
+]
+IPYTHON_KERNEL_DISPLAY_NAME = 'Django Kernel'

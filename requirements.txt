@@ -3,3 +3,4 @@ gensim==4.3.1
 Django==3.2.18
 environs==9.5.0
 python-telegram-bot==13.13
+django_extensions==3.2.3
