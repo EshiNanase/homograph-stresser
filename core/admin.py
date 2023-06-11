@@ -15,6 +15,7 @@ class QuasiSynonymInline(admin.TabularInline):
 @admin.register(Homograph)
 class HomographAdmin(admin.ModelAdmin):
     inlines = [QuasiSynonymInline]
+    ordering = ['homograph']
 
     class Meta:
         model = Homograph
