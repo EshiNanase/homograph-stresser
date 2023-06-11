@@ -29,6 +29,9 @@ class QuasiSynonym(models.Model):
         related_name='quasis',
         verbose_name='Омограф'
     )
+    initial_weight = models.PositiveSmallIntegerField(
+        verbose_name='Изначальный вес'
+    )
     stress = models.PositiveSmallIntegerField(
         verbose_name='На какой слог ударение (с нуля)'
     )
@@ -58,12 +61,12 @@ def create_quasi_synonyms(sender, instance, created, **kwargs):
             model = KeyedVectors.load_word2vec_format(settings.MODEL_PATH, binary=True)
             morph = pymorphy2.MorphAnalyzer(lang='ru')
 
-            if len(instance.synonyms) == 3:
-                quantity = 100
+            if 3 >= len(instance.synonyms) >= 5:
+                quantity = 200
             elif len(instance.synonyms) == 2:
-                quantity = 150
-            else:
                 quantity = 300
+            else:
+                quantity = 500
 
             for synonym in instance.synonyms:
                 tag = morph.parse(synonym)[0].tag.POS

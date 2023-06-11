@@ -7,7 +7,8 @@ morph = pymorphy2.MorphAnalyzer(lang='ru')
 
 
 def rip_punctuation(sentence):
-    for symbol in punctuation:
+    symbols = punctuation + '»' + '«'
+    for symbol in symbols:
         sentence = sentence.replace(symbol, '')
     sentence = " ".join(sentence.split())
     return sentence
@@ -17,7 +18,7 @@ def find_homograph(text_initial):
 
     sentence = rip_punctuation(text_initial).split(' ')
     homographs = Homograph.objects.prefetch_related('quasis').all()
-
+    
     text_normalized = []
     homographs_found = []
     for word in sentence:
@@ -48,14 +49,14 @@ def make_stress(string, n):
     return string
 
 
-def count_probability(sentence_normalized, homograph):
+def count_weights(sentence_normalized, homograph):
     main_quasis = homograph.quasis.all()
-    probability = {quasi.stress: 0 for quasi in main_quasis}
+    weights = {quasi.stress: quasi.initial_weight for quasi in main_quasis}
     for word in sentence_normalized:
         for main_quasi in main_quasis:
             if word in main_quasi.quasi_synonyms:
-                probability[main_quasi.stress] += main_quasi.quasi_synonyms[word]
-    return probability, homograph
+                weights[main_quasi.stress] += main_quasi.quasi_synonyms[word]
+    return weights, homograph
 
 
 class Command(BaseCommand):
@@ -68,6 +69,6 @@ class Command(BaseCommand):
         if not homograph:
             raise RuntimeError('Омограф не найден!')
 
-        probability, homograph = count_probability(text_normalized, homograph)
+        weights, homograph = count_weights(text_normalized, homograph)
 
-        print(make_stress(string=homograph.homograph, n=max(probability, key=probability.get)))
+        print(make_stress(string=homograph.homograph, n=max(weights, key=weights.get)))
