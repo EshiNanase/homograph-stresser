@@ -147,8 +147,9 @@ except ImportError:
 
 NOTEBOOK_ARGUMENTS = [
     '--ip', '0.0.0.0',
+    '--allow-root',
+    '--no-browser',
     '--port', '8888',
     '--notebook-dir', 'notebooks',
-    '--NotebookApp.default_url', notebook_default_url,
+    '--NotebookApp.default_url', notebook_default_url
 ]
-IPYTHON_KERNEL_DISPLAY_NAME = 'Django Kernel'
