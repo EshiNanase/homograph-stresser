@@ -8,7 +8,7 @@ admin.site.unregister(User)
 
 class QuasiSynonymInline(admin.TabularInline):
     model = QuasiSynonym
-    fields = ['synonyms', 'stress', 'quasi_synonyms']
+    fields = ['synonyms', 'initial_weight', 'stress', 'quasi_synonyms']
     extra = 0
 
 
