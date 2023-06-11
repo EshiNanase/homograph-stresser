@@ -140,6 +140,7 @@ TELEGRAM_CHAT_ID = env.str('TELEGRAM_CHAT_ID')
 # JUPYTER
 NOTEBOOK_ARGUMENTS = [
     '--ip', '0.0.0.0',
-    '--port', '8888',
+    '--allow-root',
+    '--no-browser',
 ]
 IPYTHON_KERNEL_DISPLAY_NAME = 'Django Kernel'

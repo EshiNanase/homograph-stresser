@@ -4,3 +4,6 @@ Django==3.2.18
 environs==9.5.0
 python-telegram-bot==13.13
 django_extensions==3.2.3
+notebook==6.5.4
+ipython==8.14.0
+jupyter==1.0.0
